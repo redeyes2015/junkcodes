@@ -1,27 +1,27 @@
 package main
 
 import (
-	"net/http"
-	"fmt"
-	"os"
-	"encoding/json"
 	"./HTMLHelper"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
 )
 
 type AreaLeader struct {
-	Town string `json:"town"`
+	Town    string `json:"town"`
 	Village string `json:"village"`
-	Name string `json:"name"`
+	Name    string `json:"name"`
 }
 
-func getLinks(baseURL string) []string{
+func getLinks(baseURL string) []string {
 	pageGet, err := http.Get(baseURL)
 	if err != nil {
 		fmt.Println("failed to get page")
-		return nil;
+		return nil
 	}
 	dec := HTMLHelper.NewHTMLDecoder(pageGet.Body)
-	defer pageGet.Body.Close();
+	defer pageGet.Body.Close()
 
 	links := make([]string, 0, 12)
 	for {
@@ -30,7 +30,7 @@ func getLinks(baseURL string) []string{
 			break
 		}
 
-		for _, attr := range(aTag.Attr) {
+		for _, attr := range aTag.Attr {
 			if attr.Name.Local == "href" {
 				links = append(links, attr.Value)
 			}
@@ -43,11 +43,11 @@ func getTownsFromPage(url string) []*AreaLeader {
 	pageGet, err := http.Get(url)
 	if err != nil {
 		fmt.Println("failed to get page")
-		return nil;
+		return nil
 	}
 	dec := HTMLHelper.NewHTMLDecoder(pageGet.Body)
-	defer pageGet.Body.Close();
-	
+	defer pageGet.Body.Close()
+
 	if HTMLHelper.ExpectStartElement(dec, "tr") == nil {
 		fmt.Println("failed to find tr")
 		return nil
@@ -74,17 +74,15 @@ func getTownsFromPage(url string) []*AreaLeader {
 	return towns
 }
 
-
 func main() {
 	baseURL := "http://axe-level-1.herokuapp.com/lv2"
 
 	towns := make([]*AreaLeader, 0, 128)
-	for _, link := range(getLinks(baseURL)) {
-		towns = append(towns, getTownsFromPage(baseURL + link)...)
+	for _, link := range getLinks(baseURL) {
+		towns = append(towns, getTownsFromPage(baseURL+link)...)
 	}
 
-	if err := json.NewEncoder(os.Stdout).Encode(towns);
-			err != nil {
+	if err := json.NewEncoder(os.Stdout).Encode(towns); err != nil {
 		fmt.Println(err)
 	}
 }

@@ -1,20 +1,19 @@
 package main
 
 import (
-	"net/http"
+	"./HTMLHelper"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"strconv"
+	"net/http"
 	"os"
-	"encoding/json"
-	"./HTMLHelper"
+	"strconv"
 )
 
 type student struct {
-	Name string `json:"name"`
+	Name   string         `json:"name"`
 	Grades map[string]int `json:"grades"`
 }
-
 
 func getSubjectNames(dec *xml.Decoder) []string {
 	if vals := HTMLHelper.TdValues(dec); vals != nil {
@@ -27,11 +26,11 @@ func main() {
 	pageGet, err := http.Get("http://axe-level-1.herokuapp.com/")
 	if err != nil {
 		fmt.Println("failed to get page")
-		return ;
+		return
 	}
 
 	dec := xml.NewDecoder(pageGet.Body)
-	defer pageGet.Body.Close();
+	defer pageGet.Body.Close()
 
 	dec.Strict = false
 	dec.AutoClose = xml.HTMLAutoClose
@@ -63,14 +62,14 @@ func main() {
 		if raw == nil {
 			break
 		}
-		if len(raw) != len(sbjNames) + 1 {
+		if len(raw) != len(sbjNames)+1 {
 			fmt.Println("length not matched")
 			return
 		}
 		newStudent := new(student)
 		newStudent.Name = raw[0]
 		newStudent.Grades = make(map[string]int)
-		for i, val := range(raw[1:]) {
+		for i, val := range raw[1:] {
 			grade, err := strconv.Atoi(val)
 			if err != nil {
 				fmt.Println("grade format error: %s", val)

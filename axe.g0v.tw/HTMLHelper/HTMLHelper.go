@@ -1,9 +1,9 @@
-
 package HTMLHelper
+
 import (
 	"encoding/xml"
-	"io"
 	"fmt"
+	"io"
 )
 
 func NewHTMLDecoder(r io.Reader) *xml.Decoder {
@@ -25,7 +25,7 @@ func ExpectStartElement(dec *xml.Decoder, expected string) *xml.StartElement {
 			break
 		}
 
-		if se, ok := token.(xml.StartElement) ; ok {
+		if se, ok := token.(xml.StartElement); ok {
 			if se.Name.Local == expected {
 				return &se
 			}
@@ -37,8 +37,8 @@ func ExpectStartElement(dec *xml.Decoder, expected string) *xml.StartElement {
 
 func TdValues(dec *xml.Decoder) []string {
 	const (
-		waitStartTD = iota
-		waitEndTD = iota
+		waitStartTD  = iota
+		waitEndTD    = iota
 		waitCharData = iota
 	)
 	currentState := waitStartTD
