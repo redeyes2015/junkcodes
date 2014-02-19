@@ -35,6 +35,21 @@ func ExpectStartElement(dec *xml.Decoder, expected string) *xml.StartElement {
 	return nil
 }
 
+func ExpectToken(dec *xml.Decoder, check func (xml.Token) bool) xml.Token{
+	for {
+		token, err := dec.Token()
+		if err != nil {
+			fmt.Println("fail to expect token!")
+			return nil
+		}
+		if check(token) {
+			return token
+		}
+	}
+	fmt.Println("fail to expect token!")
+	return nil
+}
+
 func TdValues(dec *xml.Decoder) []string {
 	const (
 		waitStartTD  = iota
