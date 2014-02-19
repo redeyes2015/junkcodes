@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./HTMLHelper"
+	"../HTMLHelper"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
