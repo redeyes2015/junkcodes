@@ -31,12 +31,11 @@ fn main() {
     let mut nums = HashSet::new();
     let mut board_idx: Vec<usize> = (0..boards.len()).collect();
     let mut result = None;
-    for i in 0..seq.len() {
-        let n = seq[i];
+    for n in seq {
         nums.insert(n.to_string());
         let (won, yet): (Vec<usize>, Vec<usize>) = board_idx
-                         .iter()
-                         .partition(|&&idx| check_win(&boards[idx], &nums));
+                         .into_iter()
+                         .partition(|&idx| check_win(&boards[idx], &nums));
         if yet.len() == 0 {
             result = Some((won[0], n));
             break
